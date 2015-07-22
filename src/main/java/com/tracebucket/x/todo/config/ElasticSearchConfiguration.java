@@ -15,5 +15,5 @@ public class ElasticSearchConfiguration {
 	@Bean
 	public ElasticsearchOperations elasticsearchTemplate() {
 		return new ElasticsearchTemplate(nodeBuilder().local(true).node().client());
-	 }
+	}
 }

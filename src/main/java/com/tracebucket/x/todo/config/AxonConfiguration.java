@@ -25,7 +25,7 @@ import java.util.Arrays;
  * Axon Java Configuration with reasonable defaults like SimpleCommandBus, SimpleEventBus and GenericJpaRepository.
  */
 @Configuration
-@ComponentScan(basePackages = {"com.tracebucket.x.todo.query.handler", "com.tracebucket.x.todo.notification"})
+@ComponentScan(basePackages = {"com.tracebucket.x.todo.query.handler", "com.tracebucket.x.todo.notification", "com.tracebucket.x.todo.domain.handler"})
 public class AxonConfiguration {
 	
 //	@Autowired
@@ -72,7 +72,7 @@ public class AxonConfiguration {
 	
 	@Bean
 	public EventSourcingRepository<Task> taskRepository() {
-		FileSystemEventStore eventStore = new FileSystemEventStore(new SimpleEventFileResolver(new File("data/evenstore")));
+		FileSystemEventStore eventStore = new FileSystemEventStore(new SimpleEventFileResolver(new File("data/eventstore")));
 		EventSourcingRepository<Task> repository = new EventSourcingRepository<Task>(Task.class, eventStore);
 		repository.setEventBus(eventBus());
 		return repository;

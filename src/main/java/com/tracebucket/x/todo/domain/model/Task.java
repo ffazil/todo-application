@@ -7,10 +7,13 @@ import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
+import org.axonframework.repository.Repository;
 
 import javax.validation.constraints.NotNull;
 
 public class Task extends AbstractAnnotatedAggregateRoot<String> {
+
+	private Repository<Task> taskRepository;
 
 	/**
 	 * The constant serialVersionUID 
@@ -23,70 +26,40 @@ public class Task extends AbstractAnnotatedAggregateRoot<String> {
 	@NotNull
 	private boolean completed;
 	
-	/**
-	 * Creates a new Task.
-	 * 
-	 * @param command create Task
-	 */
-	@CommandHandler
-	public Task(CreateTaskCommand command) {
-		apply(new TaskCreatedEvent(command.getId(), command.getUsername(), command.getTitle()));
+	public Task(String id, String username, String title) {
+        apply(new TaskCreatedEvent(id, username, title));
 	}
 	
 	Task() {
 	}
 
-	/**
-	 * Completes a Task.
-	 * 
-	 * @param command complete Task
-	 */
-	@CommandHandler
-	void on(CompleteTaskCommand command) {
-		apply(new TaskCompletedEvent(command.getId()));
+	public void complete(){
+        apply(new TaskCompletedEvent(this.id));
+    }
+	
+	public void star() {
+		apply(new TaskStarredEvent(this.id));
 	}
 	
-	/**
-	 * Stars a Task.
-	 * 
-	 * @param command star Task
-	 */
-	@CommandHandler
-	void on(StarTaskCommand command) {
-		apply(new TaskStarredEvent(command.getId()));
+	public void unstar() {
+		apply(new TaskUnstarredEvent(this.id));
 	}
 	
-	/**
-	 * Unstars a Task.
-	 * 
-	 * @param command unstar Task
-	 */
-	@CommandHandler
-	void on(UnstarTaskCommand command) {
-		apply(new TaskUnstarredEvent(command.getId()));
-	}
-	
-	/**
-	 * Modifies a Task title.
-	 * 
-	 * @param command modify Task title
-	 */
-	@CommandHandler
-	void on(ModifyTaskTitleCommand command) {
+	public void changeTitle(String newTitle) {
 		assertNotCompleted();
-		apply(new TaskTitleModifiedEvent(command.getId(), command.getTitle()));
+		apply(new TaskTitleModifiedEvent(this.id, newTitle));
 	}
 	
 	@EventHandler
 	void on(TaskCreatedEvent event) {
 		this.id = event.getId();
 	}
-	
-	@EventHandler
-	void on(TaskCompletedEvent event) {
-		this.completed = true;
-	}
-	
+
+    @EventHandler
+    void on(TaskCompletedEvent event) {
+        this.completed = true;
+    }
+
 	private void assertNotCompleted() {
 		if (completed) {
 			throw new TaskAlreadyCompletedException("Task [ identifier = " + id + " ] is completed.");

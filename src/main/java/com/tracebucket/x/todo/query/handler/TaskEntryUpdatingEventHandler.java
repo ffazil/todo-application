@@ -1,14 +1,18 @@
 package com.tracebucket.x.todo.query.handler;
 
 import com.tracebucket.x.todo.domain.event.*;
+import com.tracebucket.x.todo.domain.model.Task;
 import com.tracebucket.x.todo.query.model.TaskEntry;
 import com.tracebucket.x.todo.query.repository.TaskEntryRepository;
 import org.axonframework.eventhandling.annotation.EventHandler;
+import org.axonframework.repository.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TaskEntryUpdatingEventHandler {
+
+
 
 	private final TaskEntryRepository taskEntryRepository;
 	
@@ -25,10 +29,12 @@ public class TaskEntryUpdatingEventHandler {
 
 	@EventHandler
 	void on(TaskCompletedEvent event) {
-		TaskEntry task = taskEntryRepository.findOne(event.getId());
+        TaskEntry task = taskEntryRepository.findOne(event.getId());
 		task.setCompleted(true);
 		
 		taskEntryRepository.save(task);
+
+
 	}
 	
 	@EventHandler
