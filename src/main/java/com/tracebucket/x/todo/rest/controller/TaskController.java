@@ -12,7 +12,6 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.domain.DefaultIdentifierFactory;
 import org.axonframework.domain.IdentifierFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 public class TaskController {
@@ -37,8 +37,8 @@ public class TaskController {
 
 	@RequestMapping(value = "/api/tasks", method = RequestMethod.GET)
 	public @ResponseBody
-	Page<TaskEntry> findlAll(Principal principal, @RequestParam(required = false, defaultValue = "false") boolean completed, Pageable pageable) {
-		return taskEntryRepository.findByUsernameAndCompleted(principal.getName(), completed, pageable);
+	List<TaskEntry> findlAll(Principal principal, @RequestParam(required = false, defaultValue = "false") boolean completed, Pageable pageable) {
+		return taskEntryRepository.findByUsernameAndCompleted(principal.getName(), completed);
 	}
 
 	@RequestMapping(value = "/api/tasks", method = RequestMethod.POST)

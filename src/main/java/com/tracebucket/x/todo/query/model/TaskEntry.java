@@ -1,9 +1,10 @@
 package com.tracebucket.x.todo.query.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.gemfire.mapping.Region;
 
-@Document(indexName = "tasks", type = "entry")
+@Region("hello")
 public class TaskEntry {
 
 	@Id
@@ -21,6 +22,7 @@ public class TaskEntry {
 
     }
 
+    @PersistenceConstructor
     public TaskEntry(String id, String username, String title, boolean completed, boolean starred) {
         this.id = id;
         this.username = username;
